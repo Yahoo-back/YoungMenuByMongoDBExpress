@@ -18,7 +18,7 @@ const tagSchema = new mongoose.Schema({
 
 	// 图标
 	icon: String,
-	url: { type: String, required: true, validate: /\S+/},
+	url: String,
 
 	// 发布日期
 	create_time: { type: Date, default: Date.now },

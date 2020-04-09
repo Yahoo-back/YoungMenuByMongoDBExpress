@@ -11,7 +11,7 @@ exports.getTagList = (req, res) => {
 	let conditions = {};
 	if (keyword) {
 		const reg = new RegExp(keyword, 'i');
-		conditions = { $or: [{ name: { $regex: reg } }, { desc: { $regex: reg } }] };
+		conditions = { $or: [{ name: { $regex: reg } }, { desc: { $regex: reg } }, { url: { $regex: reg } }] };
 	}
 	let skip = pageNum - 1 < 0 ? 0 : (pageNum - 1) * pageSize;
 	let responseData = {
@@ -23,7 +23,7 @@ exports.getTagList = (req, res) => {
 			console.error('Error:' + err);
 		} else {
 			responseData.count = count;
-			let fields = { name: 1, desc: 1, icon: 1, create_time: 1, update_time: 1 }; // 待返回的字段
+			let fields = { name: 1, desc: 1,url:1, icon: 1, create_time: 1, update_time: 1 }; // 待返回的字段
 			let options = {
 				skip: skip,
 				limit: pageSize,
@@ -42,7 +42,7 @@ exports.getTagList = (req, res) => {
 	});
 };
 exports.addTag = (req, res) => {
-	let { name, desc } = req.body;
+	let { name, desc,url } = req.body;
 	Tag.findOne({
 		name,
 	})
@@ -51,6 +51,7 @@ exports.addTag = (req, res) => {
 				let tag = new Tag({
 					name,
 					desc,
+					url,
 				});
 				tag
 					.save()
