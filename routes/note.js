@@ -1,16 +1,16 @@
-import Article from '../models/article';
+import Note from '../models/note';
 import User from '../models/user';
 import { responseClient, timestampToTime } from '../util/util';
 
-exports.addArticle = (req, res) => {
+exports.addNote = (req, res) => {
 	// if (!req.session.userInfo) {
 	// 	responseClient(res, 200, 1, '您还没登录,或者登录信息已过期，请重新登录！');
 	// 	return;
 	// }
 	const { title, author, keyword, content, desc, img_url, tags, category, state, type, origin } = req.body;
-	let tempArticle = null
+	let tempNote = null
 	if(img_url){
-		tempArticle = new Article({
+		tempNote = new Note({
 			title,
 			author,
 			keyword: keyword ? keyword.split(',') : [],
@@ -25,7 +25,7 @@ exports.addArticle = (req, res) => {
 			origin,
 		});
 	}else{
-		tempArticle = new Article({
+		tempNote = new Note({
 			title,
 			author,
 			keyword: keyword ? keyword.split(',') : [],
@@ -40,7 +40,7 @@ exports.addArticle = (req, res) => {
 		});
 	}
 	
-	tempArticle
+	tempNote
 		.save()
 		.then(data => {
 			// let article = JSON.parse(JSON.stringify(data));
@@ -56,13 +56,13 @@ exports.addArticle = (req, res) => {
 		});
 };
 
-exports.updateArticle = (req, res) => {
+exports.updateNote = (req, res) => {
 	// if (!req.session.userInfo) {
 	// 	responseClient(res, 200, 1, '您还没登录,或者登录信息已过期，请重新登录！');
 	// 	return;
 	// }
 	const { title, author, keyword, content, desc, img_url, tags, category, state, type, origin, id } = req.body;
-	Article.update(
+	Note.update(
 		{ _id: id },
 		{
 			title,
@@ -87,9 +87,9 @@ exports.updateArticle = (req, res) => {
 		});
 };
 
-exports.delArticle = (req, res) => {
+exports.delNote = (req, res) => {
 	let { id } = req.body;
-	Article.deleteMany({ _id: id })
+	Note.deleteMany({ _id: id })
 		.then(result => {
 			if (result.n === 1) {
 				responseClient(res, 200, 0, '删除成功!');
@@ -104,7 +104,7 @@ exports.delArticle = (req, res) => {
 };
 
 // 前台文章列表
-exports.getArticleList = (req, res) => {
+exports.getNoteList = (req, res) => {
 	let keyword = req.query.keyword || null;
 	let state = req.query.state || '';
 	let likes = req.query.likes || '';
@@ -140,7 +140,7 @@ exports.getArticleList = (req, res) => {
 		count: 0,
 		list: [],
 	};
-	Article.countDocuments(conditions, (err, count) => {
+	Note.countDocuments(conditions, (err, count) => {
 		if (err) {
 			console.log('Error:' + err);
 		} else {
@@ -169,7 +169,7 @@ exports.getArticleList = (req, res) => {
 				limit: pageSize,
 				sort: { create_time: -1 },
 			};
-			Article.find(conditions, fields, options, (error, result) => {
+			Note.find(conditions, fields, options, (error, result) => {
 				if (err) {
 					console.error('Error:' + error);
 					// throw error;
@@ -212,7 +212,7 @@ exports.getArticleList = (req, res) => {
 };
 
 // 后台文章列表
-exports.getArticleListAdmin = (req, res) => {
+exports.getNoteListAdmin = (req, res) => {
 	let keyword = req.query.keyword || null;
 	let state = req.query.state || '';
 	let likes = req.query.likes || '';
@@ -246,7 +246,7 @@ exports.getArticleListAdmin = (req, res) => {
 		count: 0,
 		list: [],
 	};
-	Article.countDocuments(conditions, (err, count) => {
+	Note.countDocuments(conditions, (err, count) => {
 		if (err) {
 			console.log('Error:' + err);
 		} else {
@@ -275,7 +275,7 @@ exports.getArticleListAdmin = (req, res) => {
 				limit: pageSize,
 				sort: { create_time: -1 },
 			};
-			Article.find(conditions, fields, options, (error, result) => {
+			Note.find(conditions, fields, options, (error, result) => {
 				if (err) {
 					console.error('Error:' + error);
 					// throw error;
@@ -304,13 +304,13 @@ exports.getArticleListAdmin = (req, res) => {
 };
 
 // 文章点赞
-exports.likeArticle = (req, res) => {
+exports.likeNote = (req, res) => {
 	if (!req.session.userInfo) {
 		responseClient(res, 200, 1, '您还没登录,或者登录信息已过期，请重新登录！');
 		return;
 	}
 	let { id, user_id } = req.body;
-	Article.findOne({ _id: id })
+	Note.findOne({ _id: id })
 		.then(data => {
 			let fields = {};
 			data.meta.likes = data.meta.likes + 1;
@@ -327,7 +327,7 @@ exports.likeArticle = (req, res) => {
 					new_like_user.introduce = user.introduce;
 					like_users_arr.push(new_like_user);
 					fields.like_users = like_users_arr;
-					Article.update({ _id: id }, fields)
+					Note.update({ _id: id }, fields)
 						.then(result => {
 							responseClient(res, 200, 0, '操作成功！', result);
 						})
@@ -348,19 +348,19 @@ exports.likeArticle = (req, res) => {
 };
 
 // 文章详情
-exports.getArticleDetailByType = (req, res) => {
+exports.getNoteDetailByType = (req, res) => {
 	let { type } = req.body;
 	if (!type) {
 		responseClient(res, 200, 1, '文章不存在 ！');
 		return;
 	}
-	Article.findOne({ type: type }, (Error, data) => {
+	Note.findOne({ type: type }, (Error, data) => {
 		if (Error) {
 			console.error('Error:' + Error);
 			// throw error;
 		} else {
 			data.meta.views = data.meta.views + 1;
-			Article.updateOne({ type: type }, { meta: data.meta })
+			Note.updateOne({ type: type }, { meta: data.meta })
 				.then(result => {
 					responseClient(res, 200, 0, '操作成功 ！', data);
 				})
@@ -383,7 +383,7 @@ exports.getArticleDetailByType = (req, res) => {
 };
 
 // 文章详情
-exports.getArticleDetail = (req, res) => {
+exports.getNoteDetail = (req, res) => {
 	let { id } = req.body;
 	let type = Number(req.body.type) || 1; //文章类型 => 1: 普通文章，2: 简历，3: 管理员介绍
 	console.log('type:', type);
@@ -392,13 +392,13 @@ exports.getArticleDetail = (req, res) => {
 			responseClient(res, 200, 1, '文章不存在 ！');
 			return;
 		}
-		Article.findOne({ _id: id }, (Error, data) => {
+		Note.findOne({ _id: id }, (Error, data) => {
 			if (Error) {
 				console.error('Error:' + Error);
 				// throw error;
 			} else {
 				data.meta.views = data.meta.views + 1;
-				Article.updateOne({ _id: id }, { meta: data.meta })
+				Note.updateOne({ _id: id }, { meta: data.meta })
 					.then(result => {
 						responseClient(res, 200, 0, '操作成功 ！', data);
 					})
@@ -419,14 +419,14 @@ exports.getArticleDetail = (req, res) => {
 				// console.log("doc.category:",doc.category);           // undefined
 			});
 	} else {
-		Article.findOne({ type: type }, (Error, data) => {
+		Note.findOne({ type: type }, (Error, data) => {
 			if (Error) {
 				console.log('Error:' + Error);
 				// throw error;
 			} else {
 				if (data) {
 					data.meta.views = data.meta.views + 1;
-					Article.updateOne({ type: type }, { meta: data.meta })
+					Note.updateOne({ type: type }, { meta: data.meta })
 						.then(result => {
 							responseClient(res, 200, 0, '操作成功 ！', data);
 						})

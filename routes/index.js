@@ -3,6 +3,7 @@
 */
 const user = require('./user');
 const article = require('./article');
+const note = require('./note');
 const comment = require('./comment');
 const message = require('./message');
 const tag = require('./tag');
@@ -32,6 +33,14 @@ module.exports = app => {
 	app.get('/getArticleListAdmin', article.getArticleListAdmin);
 	app.post('/getArticleDetail', article.getArticleDetail);
 	app.post('/likeArticle', article.likeArticle);
+
+	app.post('/addNote', note.addNote);
+	app.post('/updateNote', note.updateNote);
+	app.post('/delNote', note.delNote);
+	app.get('/getNoteList', note.getNoteList);
+	app.get('/getNoteListAdmin', note.getNoteListAdmin);
+	app.post('/getNoteDetail', note.getNoteDetail);
+	app.post('/likeNote', note.likeNote);
 
 	app.post('/addTag', tag.addTag);
 	app.post('/delTag', tag.delTag);
