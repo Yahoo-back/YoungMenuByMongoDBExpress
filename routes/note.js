@@ -43,11 +43,6 @@ exports.addNote = (req, res) => {
 	tempNote
 		.save()
 		.then(data => {
-			// let article = JSON.parse(JSON.stringify(data));
-			// console.log('article :', article);
-			// article.create_time = timestampToTime(article.create_time);
-			// article.update_time = timestampToTime(article.update_time);
-			// console.log('timestampToTime :', timestampToTime(data.create_time));
 			responseClient(res, 200, 0, '保存成功', data);
 		})
 		.catch(err => {

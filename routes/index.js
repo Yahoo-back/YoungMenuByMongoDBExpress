@@ -10,9 +10,11 @@ const tag = require('./tag');
 const link = require('./link');
 const category = require('./category');
 const timeAxis = require('./timeAxis');
+// const uploadImg = require('./uploadImg')
 
 module.exports = app => {
 	app.post('/login', user.login);
+	// app.post('/uploadImg', uploadImg.uploadImg);
 	app.post('/logout', user.logout);
 	app.post('/loginAdmin', user.loginAdmin);
 	app.post('/register', user.register);
@@ -41,6 +43,7 @@ module.exports = app => {
 	app.get('/getNoteListAdmin', note.getNoteListAdmin);
 	app.post('/getNoteDetail', note.getNoteDetail);
 	app.post('/likeNote', note.likeNote);
+
 
 	app.post('/addTag', tag.addTag);
 	app.post('/delTag', tag.delTag);
