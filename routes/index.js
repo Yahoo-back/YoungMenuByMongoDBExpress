@@ -11,7 +11,7 @@ const link = require('./link');
 const category = require('./category');
 const timeAxis = require('./timeAxis');
 // const uploadImg = require('./uploadImg')
-
+//生成的图片放入uploads文件夹下
 module.exports = app => {
 	app.post('/login', user.login);
 	// app.post('/uploadImg', uploadImg.uploadImg);
