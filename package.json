@@ -19,7 +19,7 @@
     "formidable": "^1.2.2",
     "http-errors": "~1.6.2",
     "imageinfo": "^1.0.4",
-    "mongodb": "^3.1.8",
+    "mongodb": "^3.1.13",
     "mongoose": "^5.3.7",
     "mongoose-auto-increment": "^5.0.1",
     "morgan": "~1.9.0",
